@@ -1,0 +1,91 @@
+---
+title: "Simple Linear Regression"
+author: "Awesome Me"
+output: 
+  html_document:
+    self_contained: false
+    theme: flatly
+    toc: true
+    toc_depth: 5
+    toc_float: true
+    code_folding: hide
+#    runtime: shiny
+---
+
+```{r , echo = FALSE, warning = FALSE, message=FALSE}
+library(knitr)
+library(ggplot2)
+library(png)
+```
+
+***
+## Salary Dataset
+```{r Salary, echo = TRUE}
+salary = read.csv('C:\\Datasets\\salary.csv',header = TRUE)
+
+head(salary)
+```
+
+## Outputs {.tabset .tabset-fade .tabset-pills}
+
+```{r head, echo = TRUE}
+summary(salary)
+```
+
+```{r, warning = FALSE}
+#library(plotly)
+library(ggplot2)
+library(caTools)
+set.seed(123)
+```
+## Visuals 
+
+### Visual (Linear Regression)
+
+```{r viz1, echo=FALSE}
+lin_reg = lm(formula = Salary ~ .,
+             data = salary)
+ggplot() +
+  geom_point(aes(x = salary$YearsExperience, y = salary$Salary),
+             colour = 'red') +
+  geom_line(aes(x = salary$YearsExperience, y = predict(lin_reg, newdata = salary)),
+            colour = 'blue') +
+  ggtitle('Truth or Bluff (Linear Regression)') +
+  xlab('Level') +
+  ylab('Salary')
+```
+
+### Visual (Training Set)
+
+```{r viz2, echo=FALSE}
+
+split = sample.split(salary$Salary, SplitRatio = 2/3)
+training_set = subset(salary, split == TRUE)
+test_set = subset(salary, split == FALSE)
+
+regressor = lm(formula = Salary ~ YearsExperience,
+               data = training_set)
+y_pred = predict(regressor, newdata = test_set)
+
+ggplot() +
+  geom_point(aes(x = training_set$YearsExperience, y = training_set$Salary),
+             colour = 'red') +
+  geom_line(aes(x = training_set$YearsExperience, y = predict(regressor, newdata = training_set)),
+            colour = 'blue') +
+  ggtitle('Salary vs Experience (Training set)') +
+  xlab('Years of experience') +
+  ylab('Salary')
+```
+
+### Visual (Test Set)
+
+```{r viz3, echo=FALSE}
+ggplot() +
+  geom_point(aes(x = test_set$YearsExperience, y = test_set$Salary),
+             colour = 'red') +
+  geom_line(aes(x = training_set$YearsExperience, y = predict(regressor, newdata = training_set)),
+            colour = 'blue') +
+  ggtitle('Salary vs Experience (Test set)') +
+  xlab('Years of experience') +
+  ylab('Salary')
+```
