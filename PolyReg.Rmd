@@ -1,0 +1,62 @@
+---
+title: "Polynomial Regression"
+author: "Awesome Me"
+output: 
+ html_document:
+    self_contained: false
+    theme: flatly
+    toc: true
+    toc_depth: 5
+    toc_float: true
+    code_folding: hide
+#    runtime: shiny
+---
+
+```{r , echo = FALSE, warning = FALSE, message=FALSE}
+library(knitr)
+library(ggplot2)
+library(png)
+```
+
+***
+## Position Salary Dataset
+```{r Salary, echo = TRUE}
+salary = read.csv('C:\\Datasets\\positionsalary.csv',header = TRUE)
+
+head(salary)
+```
+
+## Outputs {.tabset .tabset-fade .tabset-pills}
+
+```{r head, echo = TRUE}
+summary(salary)
+```
+
+```{r, warning = FALSE}
+#library(plotly)
+library(ggplot2)
+library(caTools)
+set.seed(123)
+```
+## Fitting and Visualizing
+
+```{r pred, warning=FALSE}
+salary$Level2 = salary$Level^2
+salary$Level3 = salary$Level^3
+salary$Level4 = salary$Level^4
+poly_reg = lm(formula = Salary ~ .,
+              data = salary)
+```
+
+
+```{r viz1, warning=FALSE, echo=FALSE}
+
+ggplot() +
+  geom_point(aes(x = salary$Level, y = salary$Salary),
+             colour = 'red') +
+  geom_line(aes(x = salary$Level, y = predict(poly_reg, newdata = salary)),
+            colour = 'blue') +
+  ggtitle('Truth or Bluff (Polynomial Regression)') +
+  xlab('Level') +
+  ylab('Salary')
+```
