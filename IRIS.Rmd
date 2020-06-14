@@ -1,0 +1,67 @@
+---
+title: "Exploring IRIS"
+author: "Awesome Me"
+output: 
+  html_document:
+    self_contained: false
+    theme: flatly
+    toc: true
+    toc_depth: 5
+    toc_float: true
+    code_folding: hide
+#    runtime: shiny
+---
+
+```{r , echo = FALSE, warning = FALSE, message=FALSE}
+library(knitr)
+library(ggplot2)
+library(png)
+```
+
+***
+## IRIS Dataset
+```{r iris, echo = TRUE}
+data(iris)
+head(iris)
+```
+
+## Statistics {.tabset .tabset-fade .tabset-pills}
+
+```{r head, echo = TRUE}
+summary(iris)
+```
+
+```{r, warning = FALSE}
+#library(plotly)
+library(ggplot2)
+library(caTools)
+set.seed(123)
+```
+
+## Visuals
+
+### Histograms
+
+```{r hist, warning = FALSE, echo=FALSE}
+hist(iris$Petal.Length)
+rug(jitter(iris$Petal.Length, factor = 10))
+```
+
+```{r hist1, warning = FALSE, echo=FALSE}
+hist(iris$Petal.Length, freq=FALSE)
+rug(jitter(iris$Petal.Length, factor = 10))
+lines(density(iris$Petal.Length), col="red", lwd = 2)
+```
+
+### Contour Plot
+
+```{r cont, warning = FALSE, echo=FALSE}
+library(MASS)
+dens <- kde2d(iris$Sepal.Length, iris$Sepal.Width, n=100)
+
+image(dens,
+    xlab="Sepal.Length", ylab="Sepal.Width")
+contour(dens, add=TRUE)
+points(jitter(iris$Sepal.Length, 2), jitter(iris$Sepal.Width, 2),
+  cex=.7, pch="+")
+```
